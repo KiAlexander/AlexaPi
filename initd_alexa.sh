@@ -15,13 +15,13 @@ case "$1" in
 
 start)
     echo "Starting Alexa..."
-    python /root/AlexaPi/main.py &
+    python /home/pi/AlexaPi/start.py Alexa.pmdl &
 
 ;;
 
 stop)
     echo "Stopping Alexa.."
-    pkill -f AlexaPi\/main\.py
+    pkill -f AlexaPi\/start\.py
 ;;
 
 restart|force-reload)

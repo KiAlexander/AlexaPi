@@ -1,9 +1,5 @@
 #! /bin/bash
 cwd=`pwd`
-if [ "$EUID" -ne 0 ]
-	then echo "Please run as root"
-	exit
-fi
 
 chmod +x *.sh
 
@@ -18,38 +14,22 @@ case $shairport in
         ;;
 esac
 
-read -p "Would you like to add always-on monitoring (y/N)? " monitorAlexa
+sudo apt-get update
 
-case $monitorAlexa in
-        [yY] ) 
-        	echo "monitoring WILL be installed."
-        ;;
-        * )
-        	echo "monitoring will NOT be installed."
-        ;;
-esac
+sudo apt-get install swig3.0 python-pyaudio python3-pyaudio sox pulseaudio -y
+sudo apt-get install libatlas-base-dev -y
+sudo apt-get install python-pygame -y
 
-apt-get update
-apt-get install wget git -y
-
-cd /root
-
-echo "--copying pocketsphinx--"
-git clone https://github.com/cmusphinx/pocketsphinx.git
-
-cd $cwd
-
+sudo apt-get install wget python-dev swig libasound2-dev memcached python-pip python-alsaaudio vlc -y
 wget --output-document vlc.py "http://git.videolan.org/?p=vlc/bindings/python.git;a=blob_plain;f=generated/vlc.py;hb=HEAD"
-apt-get install python-dev swig libasound2-dev memcached python-pip python-alsaaudio vlc libpulse-dev -y
-pip install -r requirements.txt
-touch /var/log/alexa.log
+sudo pip install -r requirements.txt
 
 case $shairport in
         [nN] ) ;;
         * )
                 echo "--building and installing shairport-sync--"
-                cd /root
-                apt-get install autoconf libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev libsoxr-dev -y
+                cd ..
+                sudo apt-get install git autoconf libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev libsoxr-dev -y
                 git clone https://github.com/mikebrady/shairport-sync.git
                 cd shairport-sync
                 autoreconf -i -f
@@ -57,23 +37,16 @@ case $shairport in
                 make
                 getent group shairport-sync &>/dev/null || sudo groupadd -r shairport-sync >/dev/null
                 getent passwd shairport-sync &> /dev/null || sudo useradd -r -M -g shairport-sync -s /usr/bin/nologin -G audio shairport-sync >/dev/null
-                make install
-                systemctl enable shairport-sync
+                sudo make install
+                sudo systemctl enable shairport-sync
                 cd $cwd
-                rm -r /root/shairport-sync
+                rm -r ../shairport-sync
         ;;
 esac
 
-case $monitorAlexa in
-        [yY] ) 
-		cp initd_alexa_monitored.sh /etc/init.d/AlexaPi
-	;;
-        * )
-		cp initd_alexa.sh /etc/init.d/AlexaPi	
-        ;;
-esac
-
-update-rc.d AlexaPi defaults
+sudo cp init.d_alexa.sh /etc/init.d/AlexaPi
+sudo update-rc.d AlexaPi defaults
+sudo touch /var/log/alexa.log
 
 echo "--Creating creds.py--"
 echo "Enter your Device Type ID:"
