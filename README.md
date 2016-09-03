@@ -11,22 +11,19 @@
 * [Anand](http://padfoot.in)
 * [Mason Stone](https://github.com/maso27)
 * [Nascent Objects](https://github.com/nascentobjects)
+* [Dat Bac Do](https://github.com/bdatdo0601)
 
 ---
  
 This is the code needed to Turn a Raspberry Pi into a client for Amazon's Alexa service, I have developed this against the Pi 2 but I see no reason it shouldn't run on the other models. Feedback welcome.
 ---
-##NOTE This branch is a hacked-up version of the original at sammachin's repository
+##NOTE This is a continuation of a project started at https://github.com/sammachin/AlexaPi
+##EXTRA NOTE This version expects the user to be logged in as 'pi' instead of 'root', as outlined in other versions.
 
 Added in this branch:
-* Voice Recognition via CMU Sphinx.  When the word "alexa" is detected, Alexa responds with "Yes" and the subsequent audio to be processed.
-* Push button functionality still works the same as previously as well.
+* Voice Recognition via snowboy.  When the word "alexa" is detected, Alexa responds with a beep and records the subsequent audio to be processed.
+* Push button functionality.
 * Option for the user to install shairport-sync for airplay support.
-* A ten-second button press will trigger a system halt.
-* Option to monitor for Alexa continuously and re-start if it has died.
-* Command line arguments added:
- `(-s / --silent)` = start without saying "Hello"
- `(-d / --debug)` = enable display of debug messages at command prompt
 * tunein support is improved
 * volume control via "set volume xx" where xx is between 1 and 10
 
@@ -36,8 +33,8 @@ You will need:
 * A Raspberry Pi
 * An SD Card with a fresh install of Raspbian (tested against build 2015-11-21 Jessie)
 * An External Speaker with 3.5mm Jack
-* A USB Sound Dongle and Microphone
-* A push to make button connected between GPIO 18 and GND
+* A USB Sound Dongle and/or Microphone
+* A normally-open pushbutton connected between GPIO 18 and GND
 * (Optionally) A Dual colour LED (or 2 signle LEDs) Connected to GPIO 24 & 25
 
 
@@ -47,28 +44,18 @@ Make a note of these credentials you will be asked for them during the install p
 
 ### Installation
 
-Boot your fresh Pi and login to a command prompt as root.
+Boot your fresh Pi and login to a command prompt as pi.
 
-Make sure you are in /root
+Make sure you are in /home/pi
 
 Clone this repo to the Pi
-`git clone --branch version1.2 https://github.com/maso27/AlexaPi.git`
+`git clone --branch snowboy https://github.com/maso27/AlexaPi.git`
 Run the setup script
-`./setup.sh`
+`sudo ./setup.sh`
 
 Follow instructions....
 
 Enjoy :)
-
-### Always-on monitoring
-
-If you select to install always-on monitoring, the system will re-spawn AlexaPi anytime it crashes.
-This is useful for a stand-alone device, but probably too heavy-handed if you want to use the Pi for anything else.
-
-To prevent the re-spawn from happening, add a file called "dont_start" into the /tmp directory: `touch /tmp/dont_start`
-This will kill prevent the script from creating a new instance of main.py, and a "kill" command will now truly kill the alexa program.  `rm /tmp/dont_start` will return to re-spawning.
-
-After a reboot, AlexaPi will be restarted and re-spawned as usual.
 
 ### Issues/Bugs etc.
 
