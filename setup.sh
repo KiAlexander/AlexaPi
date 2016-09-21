@@ -44,7 +44,7 @@ case $shairport in
         ;;
 esac
 
-sudo cp init.d_alexa.sh /etc/init.d/AlexaPi
+sudo cp initd_alexa.sh /etc/init.d/AlexaPi
 sudo update-rc.d AlexaPi defaults
 sudo touch /var/log/alexa.log
 
